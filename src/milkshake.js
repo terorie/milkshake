@@ -24,25 +24,25 @@ var milk = (function(){
 
     /* 
      * JavaScipt Class Includes 
+     *
+     * Resolved by the build process
      */
 
-    var req = new XMLHttpRequest();
-    req.open("GET", "Class.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "Shaker.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "Music.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "HTML5Audio.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "SoundCloudAudio.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "Renderer.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "Renderable.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "RenderItemMatcher.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "RenderItemMergeFunction.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "Variables.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "MilkDropPreset.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "PerPixelMesh.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "PipelineContext.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "TimeKeeper.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "Presets.js", false); req.send(); eval(req.responseText);
- 
+    #import src/Class.js
+    #import src/Shaker.js
+    #import src/Music.js
+    #import src/HTML5Audio.js
+    #import src/SoundCloudAudio.js
+    #import src/Renderer.js
+    #import src/Renderable.js
+    #import src/RenderItemMatcher.js
+    #import src/RenderItemMergeFunction.js
+    #import src/Variables.js
+    #import src/MilkDropPreset.js
+    #import src/PerPixelMesh.js
+    #import src/PipelineContext.js
+    #import src/TimeKeeper.js
+    #import src/Presets.js
 
     /* 
      * Core Animation Interface 
