@@ -7,7 +7,11 @@ var HTML5Audio = Class.extend({
 		  this.audioAPI = new WebkitAudioAPI();
 	  else
 		  this.audioAPI = new MozAudioAPI();
-	}
+	},
+
+  loadSample : function(url) {
+    this.audioAPI.loadSample(url);
+  }
 });
 
 var WebkitAudioAPI = Class.extend({

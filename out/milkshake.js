@@ -34,7 +34,7 @@ var milk = (function(){
  */
 // Inspired by base2 and Prototype
 (function(){
-    var initializing = false, fnTest = /xyz/.test(function(){xyz;}) ? /_super/ : /.*/;
+    var initializing = false, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
     this.Class = function(){};
     Class.extend = function(prop) {
 	var _super = this.prototype;
@@ -444,38 +444,38 @@ var Music = Class.extend({
 	    this.context = null;
 	    this.source = null;
 
-	    if (typeof webkitAudioContext != "undefined")
-		this.audioAPI = new WebkitHTML5Audio();
-	    else
-		this.audioAPI = new MozAudioAPI();
-	}
-    });
+    if (typeof webkitAudioContext != "undefined")
+		  this.audioAPI = new WebkitAudioAPI();
+	  else
+		  this.audioAPI = new MozAudioAPI();
+	},
+
+  loadSample : function(url) {
+    this.audioAPI.loadSample(url);
+  }
+});
 
 var WebkitAudioAPI = Class.extend({
 
 	init: function() {
-	    
 		this.context = new webkitAudioContext();   
-		this.source = context.createBufferSource();
-		this.processor = context.createJavaScriptNode(512);
+		this.source = this.context.createBufferSource();
+		this.processor = this.context.createJavaScriptNode(512);
 		this.processor.onaudioprocess = this.audioAvailable;
-		this.source.connect(processor);
-		this.processor.connect(context.destination);
-		this.loadSample("song.ogg");
-
+		this.source.connect(this.processor);
+		this.processor.connect(this.context.destination);
 	},
 	
 	loadSample: function(url) {
-
 	    var request = new XMLHttpRequest();
 	    request.open("GET", url, true);
 	    request.responseType = "arraybuffer";
 	
 	    request.onload = function() {
-		this.context.decodeAudioData(request.response, function(buffer) {
-			this.source.buffer = buffer;
-			this.source.looping = true;
-			this.source.noteOn(0);
+		    this.context.decodeAudioData(request.response, function(buffer) {
+			    this.source.buffer = buffer;
+			    this.source.looping = true;
+			    this.source.noteOn(0);
 		    });
 	    }
 	    request.send();
@@ -529,6 +529,7 @@ var MozAudioAPI = Class.extend({
 	}
 	
     });
+
     
 var SoundCloudAudio = Class.extend({
 
@@ -26656,15 +26657,20 @@ Presets["Unchained - Subjective Experience Of The Manifold.milk"] = {
     var shaker;
     var canvas;
     var audio;
+    var queue = [];
 
-    function shake(elementId) {
-	canvas = document.getElementById(elementId);
+    function load(url) {
+      audio.loadSample(url);
+    }
+
+    function shake(element) {
+	canvas = (element instanceof HTMLCanvasElement) ? element :  document.getElementById(element);
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 	try {
 	    initGL(function () {
 		    shaker = new Shaker();
-		    audio = new SoundCloudAudio();
+		    audio = new HTML5Audio();
 		    animationLoop();
 		    setInterval(function() {
 			    shaker.selectNext(true);
@@ -27040,7 +27046,10 @@ Presets["Unchained - Subjective Experience Of The Manifold.milk"] = {
     }
 
 
-    return {shake: shake};
+  return {
+    shake: shake,
+    load: load
+  };
 	
 })();
 
