@@ -52,8 +52,8 @@ var milk = (function(){
     var canvas;
     var audio;
 
-    function shake(elementId) {
-	canvas = document.getElementById(elementId);
+    function shake(element) {
+	canvas = (element instanceof HTMLCanvasElement) ? element :  document.getElementById(element);
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 	try {

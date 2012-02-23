@@ -3,12 +3,12 @@ var HTML5Audio = Class.extend({
 	    this.context = null;
 	    this.source = null;
 
-	    if (typeof webkitAudioContext != "undefined")
-		this.audioAPI = new WebkitHTML5Audio();
-	    else
-		this.audioAPI = new MozAudioAPI();
+    if (typeof webkitAudioContext != "undefined")
+		  this.audioAPI = new WebkitAudioAPI();
+	  else
+		  this.audioAPI = new MozAudioAPI();
 	}
-    });
+});
 
 var WebkitAudioAPI = Class.extend({
 
