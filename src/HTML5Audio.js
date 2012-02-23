@@ -13,28 +13,24 @@ var HTML5Audio = Class.extend({
 var WebkitAudioAPI = Class.extend({
 
 	init: function() {
-	    
 		this.context = new webkitAudioContext();   
 		this.source = context.createBufferSource();
 		this.processor = context.createJavaScriptNode(512);
 		this.processor.onaudioprocess = this.audioAvailable;
 		this.source.connect(processor);
 		this.processor.connect(context.destination);
-		this.loadSample("song.ogg");
-
 	},
 	
 	loadSample: function(url) {
-
 	    var request = new XMLHttpRequest();
 	    request.open("GET", url, true);
 	    request.responseType = "arraybuffer";
 	
 	    request.onload = function() {
-		this.context.decodeAudioData(request.response, function(buffer) {
-			this.source.buffer = buffer;
-			this.source.looping = true;
-			this.source.noteOn(0);
+		    this.context.decodeAudioData(request.response, function(buffer) {
+			    this.source.buffer = buffer;
+			    this.source.looping = true;
+			    this.source.noteOn(0);
 		    });
 	    }
 	    request.send();
