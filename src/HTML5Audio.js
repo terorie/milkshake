@@ -28,14 +28,15 @@ var WebkitAudioAPI = Class.extend({
 	loadSample: function(url) {
 	    var request = new XMLHttpRequest();
       var context = this.context;
+      var source = this.source;
 	    request.open("GET", url, true);
 	    request.responseType = "arraybuffer";
 	
 	    request.onload = function() {
 		    context.decodeAudioData(request.response, function(buffer) {
-			    this.source.buffer = buffer;
-			    this.source.looping = true;
-			    this.source.noteOn(0);
+			    source.buffer = buffer;
+			    source.looping = true;
+			    source.noteOn(0);
 		    });
 	    }
 	    request.send();
