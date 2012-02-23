@@ -17,8 +17,8 @@ var WebkitAudioAPI = Class.extend({
 		this.source = this.context.createBufferSource();
 		this.processor = this.context.createJavaScriptNode(512);
 		this.processor.onaudioprocess = this.audioAvailable;
-		this.source.connect(processor);
-		this.processor.connect(context.destination);
+		this.source.connect(this.processor);
+		this.processor.connect(this.context.destination);
 	},
 	
 	loadSample: function(url) {
