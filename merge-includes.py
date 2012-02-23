@@ -5,7 +5,7 @@ import sys
 import re
 
 def loadFile(name):
-  return open(name, "r").read().replace("\\", "\\\\")
+  return open(name, "r").read().replace("\\b", "\\\\b")
 
 
 if len(sys.argv) < 2:
