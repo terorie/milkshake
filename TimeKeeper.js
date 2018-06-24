@@ -20,79 +20,82 @@
  */
 
 var TimeKeeper = Class.extend({
-	init: function(presetDuration, smoothDuration) {
-	    this.smoothDuration = smoothDuration;
-	    this.presetDuration = presetDuration;
-	    this.startTime = new Date();
-	    this.UpdateTimers();
-	},
+  init: function(presetDuration, smoothDuration) {
+    this.smoothDuration = smoothDuration;
+    this.presetDuration = presetDuration;
+    this.startTime = new Date();
+    this.UpdateTimers();
+  },
 
-	UpdateTimers: function() {
-	    this.currentTime = TimeKeeper.getTicks(this.startTime) * 0.001;
-	    this.presetFrameA++;
-	    this.presetFrameB++;
-	},
+  UpdateTimers: function() {
+    this.currentTime = TimeKeeper.getTicks(this.startTime) * 0.001;
+    this.presetFrameA++;
+    this.presetFrameB++;
+  },
 
-	StartPreset: function() {
-	    this.isSmoothing = false;
-	    this.presetTimeA = this.currentTime;
-	    this.presetFrameA = 1;
-	    this.presetDurationA = this.sampledPresetDuration();
-	},
+  StartPreset: function() {
+    this.isSmoothing = false;
+    this.presetTimeA = this.currentTime;
+    this.presetFrameA = 1;
+    this.presetDurationA = this.sampledPresetDuration();
+  },
 
-	StartSmoothing: function() {
-	    this.isSmoothing = true;
-	    this.presetTimeB = this.currentTime;
-	    this.presetFrameB = 1;
-	    this.presetDurationB = this.sampledPresetDuration();
-	},
-	
-	EndSmoothing: function() {
-	    this.isSmoothing = false;
-	    this.presetTimeA = this.presetTimeB;
-	    this.presetFrameA = this.presetFrameB;
-	    this.presetDurationA = this.presetDurationB;
-	},
+  StartSmoothing: function() {
+    this.isSmoothing = true;
+    this.presetTimeB = this.currentTime;
+    this.presetFrameB = 1;
+    this.presetDurationB = this.sampledPresetDuration();
+  },
 
-	CanHardCut: function() {
-	    return ((this.currentTime - this.presetTimeA) > 3)
-	},
+  EndSmoothing: function() {
+    this.isSmoothing = false;
+    this.presetTimeA = this.presetTimeB;
+    this.presetFrameA = this.presetFrameB;
+    this.presetDurationA = this.presetDurationB;
+  },
 
-	SmoothRatio: function() {
-	    return (this.currentTime - this.presetTime) / this.smoothDuration;
-	},
+  CanHardCut: function() {
+    return this.currentTime - this.presetTimeA > 3;
+  },
 
-	IsSmoothing: function() {
-	    return this.isSmoothing;
-	},
+  SmoothRatio: function() {
+    return (this.currentTime - this.presetTime) / this.smoothDuration;
+  },
 
-	GetRunningTime: function() {
-	    return this.currentTime;
-	},
+  IsSmoothing: function() {
+    return this.isSmoothing;
+  },
 
-	PresetProgressA: function() {
-	    if (this.isSmoothing) return 1.0;
-	    else return (this.currentTime - this.presetTimeA) / this.presetDurationA;
-	},
+  GetRunningTime: function() {
+    return this.currentTime;
+  },
 
-	PresetProgressB: function() {
-	    return (this.currentTime - this.presetTimeB) / this.presetDurationB;
-	},
+  PresetProgressA: function() {
+    if (this.isSmoothing) return 1.0;
+    else return (this.currentTime - this.presetTimeA) / this.presetDurationA;
+  },
 
-	PresetFrameB: function() {
-	    return this.presetFrameB;
-	},
+  PresetProgressB: function() {
+    return (this.currentTime - this.presetTimeB) / this.presetDurationB;
+  },
 
-	PresetFrameA: function() {
-	    return this.presetFrameA;
-	},
+  PresetFrameB: function() {
+    return this.presetFrameB;
+  },
 
-	sampledPresetDuration: function() {
-	    return 40;
-	    return Math.max(1,Math.min(60, RandomNumberGenerators.gaussian(this.presetDuration)));
-	}
-    });
-	
+  PresetFrameA: function() {
+    return this.presetFrameA;
+  },
+
+  sampledPresetDuration: function() {
+    return 40;
+    return Math.max(
+      1,
+      Math.min(60, RandomNumberGenerators.gaussian(this.presetDuration))
+    );
+  }
+});
+
 TimeKeeper.getTicks = function(start) {
-    return (new Date()) - start;
-}
+  return new Date() - start;
+};
