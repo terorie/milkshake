@@ -37,8 +37,8 @@ var Shaker = Class.extend({
 							 this.settings.meshX, this.settings.meshY);
 	    }
 
-//		this.presetPos = 0;
-		this.presetPos = Math.floor(Math.random() * this.presetNames.length);
+		this.presetPos = 0;
+		// this.presetPos = Math.floor(Math.random() * this.presetNames.length);
 
 		this.activePreset = this.loadPreset();
 		console.log(this.activePreset.pipeline())
