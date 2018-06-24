@@ -507,7 +507,7 @@ var DarkenCenter = RenderItem.extend({
     });
 	
 
-var Shape = RenderItem.extend({
+ Shape = RenderItem.extend({
 	init: function(literal, initialQs) {
 
 	    this.sides = 4;

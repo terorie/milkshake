@@ -37,8 +37,11 @@ var Shaker = Class.extend({
 							 this.settings.meshX, this.settings.meshY);
 	    }
 
-	    this.presetPos = 0;
-	    this.activePreset = this.loadPreset();
+//		this.presetPos = 0;
+		this.presetPos = Math.floor(Math.random() * this.presetNames.length);
+
+		this.activePreset = this.loadPreset();
+		console.log(this.activePreset.pipeline())
 	    Renderer.SetPipeline(this.activePreset.pipeline());
 
 	    this.matcher = new RenderItemMatcher();
@@ -146,7 +149,8 @@ var Shaker = Class.extend({
 	},
 
 	switchPreset: function() {
-	    var targetPreset = this.loadPreset();
+		var targetPreset = this.loadPreset();
+		console.log(targetPreset.pipeline())
 	    Renderer.SetPipeline(targetPreset.pipeline());
 	    return targetPreset;
 	},

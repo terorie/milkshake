@@ -25,9 +25,24 @@
 
   <head>
 
+    <script type="text/javascript" src="http://cwilso.github.io/webkitAudioContext-MonkeyPatch/webkitAudioContextMonkeyPatch.js"></script>
 
+    <script type="text/javascript" src="Class.js"></script>
+    <script type="text/javascript" src="Shaker.js"></script>
+    <script type="text/javascript" src="Music.js"></script>
+    <script type="text/javascript" src="HTML5Audio.js"></script>
+    <script type="text/javascript" src="Renderer.js"></script>
+    <script type="text/javascript" src="Renderable.js"></script>
+    <script type="text/javascript" src="RenderItemMatcher.js"></script>
+    <script type="text/javascript" src="RenderItemMergeFunction.js"></script>
+    <script type="text/javascript" src="Variables.js"></script>
+    <script type="text/javascript" src="MilkDropPreset.js"></script>
+    <script type="text/javascript" src="PerPixelMesh.js"></script>
+    <script type="text/javascript" src="PipelineContext.js"></script>
+    <script type="text/javascript" src="TimeKeeper.js"></script>
+    <script type="text/javascript" src="Presets.js"></script>
     <script type="text/javascript" src="milkshake.js"></script>
-
+    
 
     <style type="text/css">
     body {
@@ -46,7 +61,7 @@
 
   </head>
 
-  <body onload="milk.shake('canvas');">
+  <body onload="shake('canvas');">
     <canvas id="canvas">
       Sorry, you need a more updated browser to see this, because it uses WebGL.
       Try the latest <a href="http://www.google.com/chrome">Google Chrome</a>

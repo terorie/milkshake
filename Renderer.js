@@ -112,7 +112,7 @@ var Renderer = Class.extend({
 	},
 
 	Interpolation: function(pipeline) {
-
+		//console.log('interpolation')
 	    gl.bindTexture(gl.TEXTURE_2D, this.renderTarget.textureID[0]);
 	    if (pipeline.textureWrap == 0) {
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -163,7 +163,7 @@ var Renderer = Class.extend({
 		    uDrawArrays(gl.TRIANGLE_STRIP, 0, this.mesh.width * 2);
 		}
 	    } else 
-		print("not static per pixel");
+		console.error("not static per pixel");
 
 	    uDisableClientState(U_TEXTURE_COORD_ARRAY);
 	    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);

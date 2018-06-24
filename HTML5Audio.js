@@ -4,7 +4,7 @@ var HTML5Audio = Class.extend({
 	    this.source = null;
 
 	    if (typeof webkitAudioContext != "undefined")
-		this.audioAPI = new WebkitHTML5Audio();
+		this.audioAPI = new WebkitAudioAPI();
 	    else
 		this.audioAPI = new MozAudioAPI();
 	}
@@ -82,7 +82,9 @@ var MozAudioAPI = Class.extend({
 		signalL[i] = fb[2*i];
 		signalR[i] = fb[2*i+1];
 	    }
-	    
+		
+		
+		debugger;
 	    if (typeof shaker != "undefined")
 		shaker.music.addPCM(signalL, signalR);
 	}

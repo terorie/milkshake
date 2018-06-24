@@ -19,29 +19,29 @@
  *
  */
 
-var milk = (function(){
+// milk = (function(){
 
 
     /* 
      * JavaScipt Class Includes 
      */
 
-    var req = new XMLHttpRequest();
-    req.open("GET", "Class.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "Shaker.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "Music.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "HTML5Audio.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "SoundCloudAudio.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "Renderer.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "Renderable.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "RenderItemMatcher.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "RenderItemMergeFunction.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "Variables.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "MilkDropPreset.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "PerPixelMesh.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "PipelineContext.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "TimeKeeper.js", false); req.send(); eval(req.responseText);
-    req.open("GET", "Presets.js", false); req.send(); eval(req.responseText);
+    // var req = new XMLHttpRequest();
+    // req.open("GET", "Class.js", false); req.send(); eval(req.responseText);
+    // req.open("GET", "Shaker.js", false); req.send(); eval(req.responseText);
+    // req.open("GET", "Music.js", false); req.send(); eval(req.responseText);
+    // req.open("GET", "HTML5Audio.js", false); req.send(); eval(req.responseText);
+    // req.open("GET", "SoundCloudAudio.js", false); req.send(); eval(req.responseText);
+    // req.open("GET", "Renderer.js", false); req.send(); eval(req.responseText);
+    // req.open("GET", "Renderable.js", false); req.send(); eval(req.responseText);
+    // req.open("GET", "RenderItemMatcher.js", false); req.send(); eval(req.responseText);
+    // req.open("GET", "RenderItemMergeFunction.js", false); req.send(); eval(req.responseText);
+    // req.open("GET", "Variables.js", false); req.send(); eval(req.responseText);
+    // req.open("GET", "MilkDropPreset.js", false); req.send(); eval(req.responseText);
+    // req.open("GET", "PerPixelMesh.js", false); req.send(); eval(req.responseText);
+    // req.open("GET", "PipelineContext.js", false); req.send(); eval(req.responseText);
+    // req.open("GET", "TimeKeeper.js", false); req.send(); eval(req.responseText);
+    // req.open("GET", "Presets.js", false); req.send(); eval(req.responseText);
  
 
     /* 
@@ -59,11 +59,12 @@ var milk = (function(){
 	try {
 	    initGL(function () {
 		    shaker = new Shaker();
-		    audio = new SoundCloudAudio();
+		    //audio = new HTML5Audio();
 		    animationLoop();
 		    setInterval(function() {
+				console.log('next')
 			    shaker.selectNext(true);
-			}, 10000);		
+			}, 5000);		
 		});
 	} catch (e) {
 	    canvas.outerHTML = "<div id='" + elementId + "' style='padding:20px;'>" + canvas.innerHTML + "</div>";
@@ -84,7 +85,7 @@ var milk = (function(){
      * Global WebGL, Programmable Shader, and Linear Algebra Routines 
      */
 
-    var gl;
+    // var gl;
 
     var U_PROJECTION = 0;
     var U_MODELVIEW = 1;
@@ -435,6 +436,6 @@ var milk = (function(){
     }
 
 
-    return {shake: shake};
+    // return {shake: shake};
 	
-})();
+// })();
