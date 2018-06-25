@@ -57,12 +57,12 @@ function shake(elementId) {
   try {
     initGL(function() {
       shaker = new Shaker();
-      //audio = new HTML5Audio();
+      audio = new HTML5Audio();
       animationLoop();
       setInterval(function() {
         console.log("next");
         shaker.selectNext(true);
-      }, 5000);
+      }, 100000);
     });
   } catch (e) {
     canvas.outerHTML =
@@ -74,16 +74,10 @@ function shake(elementId) {
   }
 }
 
-var requestAnimFrame =
-  window.webkitRequestAnimationFrame ||
-  window.mozRequestAnimationFrame ||
-  function(callback, element) {
-    window.setTimeout(callback, 1000 / 60);
-  };
 
 function animationLoop() {
   shaker.renderFrame.call(shaker);
-  requestAnimFrame(animationLoop, canvas);
+  requestAnimationFrame(animationLoop, canvas);
 }
 
 /* 
@@ -284,7 +278,8 @@ function initGL(callback) {
       textures[this.src.split("/").pop()] = this.tex;
       texloads += 1;
       if (texloads == texture_list.length) callback();
-    };
+	};
+	// console.log(texture_list[i])
     img.src = texture_list[i];
   }
 }
@@ -522,6 +517,10 @@ function uDrawArrays(mode, first, count) {
   if (!enablestex) gl.disableVertexAttribArray(texCoordPos);
   if (!enablevco) gl.disableVertexAttribArray(colorPos);
   gl.drawArrays(mode, first, count);
+//   console.log('drawArrays', mode, first, count)
+// console.log(ucolr, ucolg, ucolb, ucola);
+// gl.drawArrays(gl.POINTS, 0, 8);
+
 }
 
 function checkError(source) {

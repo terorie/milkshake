@@ -49,7 +49,7 @@ var Shaker = Class.extend({
     // this.presetPos = Math.floor(Math.random() * this.presetNames.length);
 
     this.activePreset = this.loadPreset();
-    console.log(this.activePreset.pipeline());
+    // console.log(this.activePreset.pipeline());
     Renderer.SetPipeline(this.activePreset.pipeline());
 
     this.matcher = new RenderItemMatcher();
@@ -132,7 +132,7 @@ var Shaker = Class.extend({
         " frames per second";
       this.fpsstart = TimeKeeper.getTicks(this.timeKeeper.startTime);
     }
-    if (this.count % 400 == 0) this.renderInfoBox();
+    // if (this.count % 400 == 0) this.renderInfoBox();
 
     var timediff =
       TimeKeeper.getTicks(this.timeKeeper.startTime) - this.timestart;
@@ -161,7 +161,7 @@ var Shaker = Class.extend({
 
   switchPreset: function() {
     var targetPreset = this.loadPreset();
-    console.log(targetPreset.pipeline());
+    // console.log(targetPreset.pipeline());
     Renderer.SetPipeline(targetPreset.pipeline());
     return targetPreset;
   },
@@ -178,23 +178,23 @@ var Shaker = Class.extend({
   presetSwitchedEvent: function() {},
 
   createInfoBox: function() {
-    this.infoBox = document.createElement("div");
-    this.infoBox.style.position = "absolute";
-    this.infoBox.style.height = "0px";
-    this.infoBox.style.width = canvas.width - 80 + "px";
-    this.infoBox.style.left = canvas.offsetLeft + 30 + "px";
-    this.infoBox.style.top = canvas.offsetTop + canvas.offsetHeight - 60 + "px";
+    // this.infoBox = document.createElement("div");
+    // this.infoBox.style.position = "absolute";
+    // this.infoBox.style.height = "0px";
+    // this.infoBox.style.width = canvas.width - 80 + "px";
+    // this.infoBox.style.left = canvas.offsetLeft + 30 + "px";
+    // this.infoBox.style.top = canvas.offsetTop + canvas.offsetHeight - 60 + "px";
 
-    this.infoBox.style.fontSize = "9pt";
-    this.infoBox.style.fontFamily = "Lucida Grande";
-    this.infoBox.style.fontWeight = "bold";
-    this.infoBox.style.paddingLeft = "20px";
-    this.infoBox.style.paddingTop = "5px";
-    this.infoBox.style.paddingBottom = "5px";
-    this.infoBox.style.borderRadius = "3px";
-    this.infoBox.style.textAlign = "center";
+    // this.infoBox.style.fontSize = "9pt";
+    // this.infoBox.style.fontFamily = "Lucida Grande";
+    // this.infoBox.style.fontWeight = "bold";
+    // this.infoBox.style.paddingLeft = "20px";
+    // this.infoBox.style.paddingTop = "5px";
+    // this.infoBox.style.paddingBottom = "5px";
+    // this.infoBox.style.borderRadius = "3px";
+    // this.infoBox.style.textAlign = "center";
 
-    this.infoBox.style.backgroundColor = "rgba(255,255,255,0.5)";
+    // this.infoBox.style.backgroundColor = "rgba(255,255,255,0.5)";
   },
 
   renderInfoBox: function() {
