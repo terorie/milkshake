@@ -19,8 +19,9 @@
  *
  */
 
-var Music = Class.extend({
-  init: function() {
+class Music {
+
+  constructor() {
     this.vol_instant = 0;
     this.vol_history = 0;
     this.vol_buffer = new Float32Array(80);
@@ -30,7 +31,8 @@ var Music = Class.extend({
     this.beat_val = new Float32Array(32);
     this.beat_variance = new Float32Array(32);
     this.beat_buffer = [];
-    for (var i = 0; i < 32; i++) this.beat_buffer.push(new Float32Array(80));
+    for (let i = 0; i < 32; i++)
+      this.beat_buffer.push(new Float32Array(80));
 
     this.beat_sensitivity = 10.0;
     this.vol = 0;
@@ -43,26 +45,26 @@ var Music = Class.extend({
 
     this.pcmdataL = new Float32Array(this.numsamples);
     this.pcmdataR = new Float32Array(this.numsamples);
-  },
+  }
 
-  reset: function() {
+  reset() {
     this.bass = 0;
     this.mid = 0;
     this.treb = 0;
     this.bass_att = 0;
     this.mid_att = 0;
     this.treb_att = 0;
-  },
+  }
 
-  addPCM: function(left, right) {
-    if (this.numsamples == left.length && this.numsamples.right == right.length)
-      for (var i = 0; i < this.numsamples; i++) {
+  addPCM(left, right) {
+    if (this.numsamples === left.length && this.numsamples.right === right.length)
+      for (let i = 0; i < this.numsamples; i++) {
         this.PCML[i] = left[i];
         this.PCMR[i] = right[i];
       }
     else {
       // assume 256 samples and interpolate
-      for (var i = 0; i < 255; i++) {
+      for (let i = 0; i < 255; i++) {
         this.PCML[2 * i] = left[i];
         this.PCML[2 * i + 1] = (left[i] + left[i + 1]) / 2;
         this.PCMR[2 * i] = right[i];
@@ -72,20 +74,20 @@ var Music = Class.extend({
       this.PCMR[510] = this.PCMR[511] = right[255];
     }
 
-    for (var i = 0; i < this.numsamples; i++) {
+    for (let i = 0; i < this.numsamples; i++) {
       this.pcmdataL[i] = this.PCML[this.numsamples - 1 - i];
       this.pcmdataR[i] = this.PCMR[this.numsamples - 1 - i];
     }
-  },
+  }
 
-  detectFromSamples: function() {
+  detectFromSamples() {
     this.vol_old = this.vol;
     this.bass = 0;
     this.mid = 0;
     this.treb = 0;
-    var linear = 0;
-    var i, j;
-    var temp2 = 0;
+    let linear = 0;
+    let i, j;
+    let temp2 = 0;
     this.vol_instant = 0;
     for (i = 0; i < 16; i++) {
       this.beat_instant[i] = 0;
@@ -148,10 +150,10 @@ var Music = Class.extend({
 
     this.beat_buffer_pos++;
     if (this.beat_buffer_pos > 79) this.beat_buffer_pos = 0;
-  },
+  }
 
-  getPCM: function(PCMdata, samples, channel, freq, smoothing) {
-    PCMd = channel == 0 ? this.PCML : this.PCMR;
+  getPCM(PCMdata, samples, channel, freq, smoothing) {
+    const PCMd = channel === 0 ? this.PCML : this.PCMR;
 
     PCMdata[0] = PCMd[this.numsamples - 1];
     for (var i = 1; i < samples; i++)
@@ -161,4 +163,7 @@ var Music = Class.extend({
     if (freq) throw Error("fourier transform not implemented");
     //this.rdft(samples, PCMdata);
   }
-});
+
+}
+
+export { Music };

@@ -1209,3 +1209,21 @@ class Solarize extends Filter {
   }
 
 }
+
+export {
+  RenderItem,
+  WaveMode,
+  MilkdropWaveform,
+  CustomWaveform,
+  DarkenCenter,
+  Shape,
+  MotionVectors,
+  Border,
+  Orientation,
+  VideoEcho,
+  Filter,
+  Brighten,
+  Darken,
+  Invert,
+  Solarize
+}

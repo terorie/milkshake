@@ -1,5 +1,6 @@
-var Shaker = Class.extend({
-  init: function() {
+class Shaker {
+
+  constructor() {
     this.settings = {
       meshX: 32,
       meshY: 24,
@@ -69,18 +70,18 @@ var Shaker = Class.extend({
     this.infoBoxPos = -1;
     this.createInfoBox();
     this.timeKeeper.StartPreset();
-  },
+  }
 
-  reset: function() {
+  reset() {
     this.mspf = 0;
     this.timed = 0;
     this.timestart = 0;
     this.count = 0;
     this.fpsstart = 0;
     this.music.reset();
-  },
+  }
 
-  renderFrame: function() {
+  renderFrame() {
     this.timestart = TimeKeeper.getTicks(this.timeKeeper.startTime);
     this.timeKeeper.UpdateTimers();
     this.mspf = Math.floor(1000.0 / this.settings.fps);
@@ -121,7 +122,7 @@ var Shaker = Class.extend({
     );
 
     this.count++;
-    if (this.count % 100 == 0) {
+    if (this.count % 100 === 0) {
       this.renderer.realfps =
         100.0 /
         ((TimeKeeper.getTicks(this.timeKeeper.startTime) - this.fpsstart) /
@@ -134,20 +135,20 @@ var Shaker = Class.extend({
     }
     // if (this.count % 400 == 0) this.renderInfoBox();
 
-    var timediff =
+    const timediff =
       TimeKeeper.getTicks(this.timeKeeper.startTime) - this.timestart;
     if (timediff < this.mspf) return Math.floor(this.mspf - timediff);
     return 0;
-  },
+  }
 
-  evaluateSecondPreset: function() {
+  evaluateSecondPreset() {
     this.pipelineContext2.time = this.timeKeeper.GetRunningTime();
     this.pipelineContext2.frame = this.timeKeeper.PresetFrameB();
     this.pipelineContext2.progress = this.timeKeeper.PresetProgressB();
     this.m_activePreset2.Render(this.music, this.pipelineContext2);
-  },
+  }
 
-  selectNext: function(hardCut) {
+  selectNext(hardCut) {
     if (this.presetPos >= this.presetNames.length - 1) return;
     if (!hardCut) this.timeKeeper.StartSmoothing();
     this.presetPos++;
@@ -157,27 +158,26 @@ var Shaker = Class.extend({
       this.timeKeeper.StartPreset();
     }
     this.presetSwitchedEvent(hardCut, this.presetPos);
-  },
+  }
 
-  switchPreset: function() {
-    var targetPreset = this.loadPreset();
+  switchPreset() {
+    const targetPreset = this.loadPreset();
     // console.log(targetPreset.pipeline());
     Renderer.SetPipeline(targetPreset.pipeline());
     return targetPreset;
-  },
+  }
 
-  loadPreset: function() {
-    var preset = Presets[this.presetNames[this.presetPos]];
-    return preset;
-  },
+  loadPreset() {
+    return Presets[this.presetNames[this.presetPos]];
+  }
 
-  havePresets: function() {
+  havePresets() {
     return this.presetPos < this.presetNames.length - 1;
-  },
+  }
 
-  presetSwitchedEvent: function() {},
+  presetSwitchedEvent() {}
 
-  createInfoBox: function() {
+  createInfoBox() {
     // this.infoBox = document.createElement("div");
     // this.infoBox.style.position = "absolute";
     // this.infoBox.style.height = "0px";
@@ -195,14 +195,14 @@ var Shaker = Class.extend({
     // this.infoBox.style.textAlign = "center";
 
     // this.infoBox.style.backgroundColor = "rgba(255,255,255,0.5)";
-  },
+  }
 
-  renderInfoBox: function() {
-    if (this.infoBoxPos == -1 && Object.keys(this.infoMessages).length > 0) {
+  renderInfoBox() {
+    if (this.infoBoxPos === -1 && Object.keys(this.infoMessages).length > 0) {
       this.infoBoxPos = 0;
       document.body.appendChild(this.infoBox);
       this.infoMessages["ShamelessPlug"] =
-        "fork me on <a href='http://github.com/gattis/milkshake'>github</a>!";
+        "fork me on <a href='http://github.com/terorie/milkshake'>github</a>!";
       this.infoMessages["ChooseTracks"] =
         "<a href='bookmarklet.html'>Choose Audio Tracks</a>";
     }
@@ -212,8 +212,11 @@ var Shaker = Class.extend({
         Object.keys(this.infoMessages)[this.infoBoxPos]
       ];
       this.infoBoxPos++;
-      if (this.infoBoxPos == Object.keys(this.infoMessages).length)
+      if (this.infoBoxPos === Object.keys(this.infoMessages).length)
         this.infoBoxPos = 0;
     }
   }
-});
+
+}
+
+export { Shaker };
