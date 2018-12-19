@@ -19,8 +19,9 @@
  *
  */
 
-var MilkdropPreset = Class.extend({
-  init: function(name, preset, gx, gy) {
+class MilkdropPreset {
+
+  constructor(name, preset, gx, gy) {
     this.name = name;
     this.inputs = {};
     this.outputs = {
@@ -127,10 +128,10 @@ var MilkdropPreset = Class.extend({
       "orig_y"
     ]);
 
-    for (var x = 0; x < gx; x++)
-      for (var y = 0; y < gy; y++) {
-        var origx = x / (gx - 1);
-        var origy = -(y / (gy - 1) - 1);
+    for (let x = 0; x < gx; x++)
+      for (let y = 0; y < gy; y++) {
+        const origx = x / (gx - 1);
+        const origy = -(y / (gy - 1) - 1);
         this.outputs.rad_mesh[x][y] =
           0.7071067 *
           Math.sqrt(
@@ -139,43 +140,44 @@ var MilkdropPreset = Class.extend({
         this.outputs.orig_x[x][y] = (origx - 0.5) * 2;
         this.outputs.orig_y[x][y] = (origy - 0.5) * 2;
       }
-  },
+  }
 
-  loadParam: function(param, value) {
+  loadParam(param, value) {
     if (param.toLowerCase() in OutputParamMap) {
-      var internal = OutputParamMap[param.toLowerCase()];
-      var container = this.outputs;
-      var paramParts = internal[0].split(".");
-      var i;
+      const internal = OutputParamMap[param.toLowerCase()];
+      let container = this.outputs;
+      const paramParts = internal[0].split(".");
+      let i;
       for (i = 0; i < paramParts.length - 1; i++)
         container = container[paramParts[i]];
-      var internalParam = paramParts[i];
-      var paramType = internal[2];
-      if (paramType == Number || paramType == Boolean) {
+      const internalParam = paramParts[i];
+      const paramType = internal[2];
+      if (paramType instanceof Number || paramType instanceof Boolean) {
         container[internalParam] = paramType(value);
-        canonical = param;
-        if (internal.length > 3) canonical = internal[3];
+        let canonical = param;
+        if (internal.length > 3)
+          canonical = internal[3];
         if (canonical in this.initialVals)
           this.initialVals[canonical] = paramType(value);
       } else this[internalParam] = paramType(value);
     }
-  },
+  }
 
-  varInit: function() {
-    var testPool = new PresetFrameVariablePool();
-    var testPixPool = new PresetPixelVariablePool();
-    var winProps = {};
-    for (var prop in window) winProps[prop] = null;
+  varInit() {
+    const testPool = new PresetFrameVariablePool();
+    const testPixPool = new PresetPixelVariablePool();
+    const winProps = {};
+    for (const prop in window) winProps[prop] = null;
 
-    for (var i = 0; i < 30; i++)
+    for (let i = 0; i < 30; i++)
       try {
         this.init_code(testPool);
         this.per_frame_code(testPool);
         break;
       } catch (error) {
-        if (error.name == "ReferenceError") {
-          var customVar;
-          if (error.message.indexOf("Can't find variable:") == 0)
+        if (error instanceof ReferenceError) {
+          let customVar;
+          if (error.message.indexOf("Can't find variable:") === 0)
             customVar = error.message.split(" ").pop();
           else customVar = error.message.split(" ")[0];
           this.framePool[customVar] = 0;
@@ -185,14 +187,14 @@ var MilkdropPreset = Class.extend({
           throw error;
         }
       }
-    for (var i = 0; i < 30; i++)
+    for (let i = 0; i < 30; i++)
       try {
         this.per_pixel_code(testPixPool);
         break;
       } catch (error) {
-        if (error.name == "ReferenceError") {
+        if (error instanceof ReferenceError) {
           var customVar;
-          if (error.message.indexOf("Can't find variable:") == 0)
+          if (error.message.indexOf("Can't find variable:") === 0)
             customVar = error.message.split(" ").pop();
           else customVar = error.message.split(" ")[0];
           this.pixelPool[customVar] = 0;
@@ -203,50 +205,50 @@ var MilkdropPreset = Class.extend({
         }
       }
 
-    for (var prop in window)
+    for (const prop in window)
       if (!(prop in winProps)) {
         this.framePool[prop] = 0;
         delete window[prop];
       }
-  },
+  }
 
-  createMeshes: function(io, names) {
-    for (var m = 0; m < names.length; m++)
+  createMeshes(io, names) {
+    for (let m = 0; m < names.length; m++)
       for (
         io[names[m]] = [];
         io[names[m]].length < io.gx;
         io[names[m]].push(new Float32Array(io.gy))
       );
-  },
+  }
 
-  pipeline: function() {
+  pipeline() {
     return this.outputs;
-  },
+  }
 
-  pushVars: function() {
+  pushVars() {
     this.framePool.pushOutputs(this.initialVals);
     this.framePool.pushInputs(this.inputs);
     this.framePool.pushQs(this.initialQs);
-  },
+  }
 
-  popVars: function() {
-    var i;
-    for (var p = 0; p < this.framePool.outputs.length; p++) {
-      var param = this.framePool.outputs[p];
-      var internal = OutputParamMap[param];
-      var container = this.outputs;
-      var paramParts = internal[0].split(".");
+  popVars() {
+    let i;
+    for (let p = 0; p < this.framePool.outputs.length; p++) {
+      const param = this.framePool.outputs[p];
+      const internal = OutputParamMap[param];
+      let container = this.outputs;
+      const paramParts = internal[0].split(".");
       for (i = 0; i < paramParts.length - 1; i++)
         container = container[paramParts[i]];
       container[paramParts[i]] = internal[2](this.framePool[param]);
     }
-  },
+  }
 
-  runPerPixelCode: function() {
+  runPerPixelCode() {
     this.framePool.transferQs(this.pixelPool);
     this.pixelPool.pushInputs(this.inputs);
-    for (var x = 0; x < this.inputs.gx; x++)
-      for (var y = 0; y < this.inputs.gy; y++) {
+    for (let x = 0; x < this.inputs.gx; x++)
+      for (let y = 0; y < this.inputs.gy; y++) {
         this.pixelPool.x = this.inputs.origx[x][y];
         this.pixelPool.y = this.inputs.origy[x][y];
         this.pixelPool.rad = this.inputs.origrad[x][y];
@@ -263,36 +265,36 @@ var MilkdropPreset = Class.extend({
         this.outputs.sx_mesh[x][y] = this.pixelPool.sx;
         this.outputs.sy_mesh[x][y] = this.pixelPool.sy;
       }
-  },
+  }
 
-  runCustomWaveCode: function() {
-    for (var w = 0; w < this.customWaves.length; w++) {
-      var wave = this.customWaves[w];
+  runCustomWaveCode() {
+    for (let w = 0; w < this.customWaves.length; w++) {
+      const wave = this.customWaves[w];
       this.framePool.transferQs(wave.framePool);
       wave.framePool.pushInputs(this.inputs);
       wave.runCode();
     }
-  },
+  }
 
-  runCustomShapeCode: function() {
-    for (var s = 0; s < this.customShapes.length; s++) {
-      var shape = this.customShapes[s];
+  runCustomShapeCode() {
+    for (let s = 0; s < this.customShapes.length; s++) {
+      const shape = this.customShapes[s];
       this.framePool.transferQs(shape.framePool);
       shape.framePool.pushInputs(this.inputs);
       shape.runCode();
     }
-  },
+  }
 
-  initMesh: function(mesh) {
+  initMesh(mesh) {
     // should we init from framepool or initialvals?
-    var key = mesh + "_mesh";
-    var val = this.framePool[mesh];
+    const key = mesh + "_mesh";
+    const val = this.framePool[mesh];
     for (var x = 0; x < this.inputs.gx; x++)
       for (var y = 0; y < this.inputs.gy; y++) this.outputs[key][x][y] = val;
     this.pixelPool[mesh] = this.framePool[mesh];
-  },
+  }
 
-  initPerPixelMeshes: function() {
+  initPerPixelMeshes() {
     this.initMesh("cx");
     this.initMesh("cy");
     this.initMesh("sx");
@@ -303,10 +305,10 @@ var MilkdropPreset = Class.extend({
     this.initMesh("zoomexp");
     this.initMesh("rot");
     this.initMesh("warp");
-  },
+  }
 
-  Render: function(music, context) {
-	//   console.log('render', JSON.stringify(music))
+  Render(music, context) {
+    //   console.log('render', JSON.stringify(music))
     this.inputs.bass = music.bass;
     this.inputs.mid = music.mid;
     this.inputs.treb = music.treb;
@@ -333,10 +335,10 @@ var MilkdropPreset = Class.extend({
     this.PerPixelMath(context);
     this.outputs.drawables = [];
     this.outputs.drawables.push(this.outputs.mv);
-    for (i = 0; i < this.customShapes.length; i++)
+    for (let i = 0; i < this.customShapes.length; i++)
       if (this.customShapes[i].enabled)
         this.outputs.drawables.push(this.customShapes[i]);
-    for (i = 0; i < this.customWaves.length; i++)
+    for (let i = 0; i < this.customWaves.length; i++)
       if (this.customWaves[i].enabled)
         this.outputs.drawables.push(this.customWaves[i]);
     this.outputs.drawables.push(this.outputs.wave);
@@ -354,9 +356,9 @@ var MilkdropPreset = Class.extend({
       this.outputs.compositeDrawables.push(this.outputs.solarize);
     if (this.outputs.bInvert)
       this.outputs.compositeDrawables.push(this.outputs.invert);
-  },
+  }
 
-  PerPixelMath: function(context) {
+  PerPixelMath(context) {
     var x, y, fZoom2, fZoom2Inv;
 
     for (x = 0; x < this.outputs.gx; x++)
@@ -379,19 +381,19 @@ var MilkdropPreset = Class.extend({
       for (y = 0; y < this.outputs.gy; y++)
         this.outputs.x_mesh[x][y] =
           (this.outputs.x_mesh[x][y] - this.outputs.cx_mesh[x][y]) /
-            this.outputs.sx_mesh[x][y] +
+          this.outputs.sx_mesh[x][y] +
           this.outputs.cx_mesh[x][y];
 
     for (x = 0; x < this.outputs.gx; x++)
       for (y = 0; y < this.outputs.gy; y++)
         this.outputs.y_mesh[x][y] =
           (this.outputs.y_mesh[x][y] - this.outputs.cy_mesh[x][y]) /
-            this.outputs.sy_mesh[x][y] +
+          this.outputs.sy_mesh[x][y] +
           this.outputs.cy_mesh[x][y];
 
-    var fWarpTime = context.time * this.outputs.fWarpAnimSpeed;
-    var fWarpScaleInv = 1.0 / this.outputs.fWarpScale;
-    var f = [
+    const fWarpTime = context.time * this.outputs.fWarpAnimSpeed;
+    const fWarpScaleInv = 1.0 / this.outputs.fWarpScale;
+    const f = [
       11.68 + 4.0 * Math.cos(fWarpTime * 1.413 + 10),
       8.77 + 3.0 * Math.cos(fWarpTime * 1.113 + 7),
       10.54 + 3.0 * Math.cos(fWarpTime * 1.233 + 3),
@@ -405,36 +407,36 @@ var MilkdropPreset = Class.extend({
           0.0035 *
           Math.sin(
             fWarpTime * 0.333 +
-              fWarpScaleInv *
-                (this.outputs.orig_x[x][y] * f[0] -
-                  this.outputs.orig_y[x][y] * f[3])
+            fWarpScaleInv *
+            (this.outputs.orig_x[x][y] * f[0] -
+              this.outputs.orig_y[x][y] * f[3])
           );
         this.outputs.y_mesh[x][y] +=
           this.outputs.warp_mesh[x][y] *
           0.0035 *
           Math.cos(
             fWarpTime * 0.375 -
-              fWarpScaleInv *
-                (this.outputs.orig_x[x][y] * f[2] +
-                  this.outputs.orig_y[x][y] * f[1])
+            fWarpScaleInv *
+            (this.outputs.orig_x[x][y] * f[2] +
+              this.outputs.orig_y[x][y] * f[1])
           );
         this.outputs.x_mesh[x][y] +=
           this.outputs.warp_mesh[x][y] *
           0.0035 *
           Math.cos(
             fWarpTime * 0.753 -
-              fWarpScaleInv *
-                (this.outputs.orig_x[x][y] * f[1] -
-                  this.outputs.orig_y[x][y] * f[2])
+            fWarpScaleInv *
+            (this.outputs.orig_x[x][y] * f[1] -
+              this.outputs.orig_y[x][y] * f[2])
           );
         this.outputs.y_mesh[x][y] +=
           this.outputs.warp_mesh[x][y] *
           0.0035 *
           Math.sin(
             fWarpTime * 0.825 +
-              fWarpScaleInv *
-                (this.outputs.orig_x[x][y] * f[0] +
-                  this.outputs.orig_y[x][y] * f[3])
+            fWarpScaleInv *
+            (this.outputs.orig_x[x][y] * f[0] +
+              this.outputs.orig_y[x][y] * f[3])
           );
       }
 
@@ -460,18 +462,17 @@ var MilkdropPreset = Class.extend({
       for (y = 0; y < this.outputs.gy; y++)
         this.outputs.y_mesh[x][y] -= this.outputs.dy_mesh[x][y];
   }
-});
 
-var wFunction = function(f) {
-  if (typeof f == "function") return f;
+}
+
+const wFunction = (f) => {
+  if (typeof f === "function") return f;
   return function() {};
 };
 
-var wArray = function(a) {
-  return a;
-};
+const wArray = (a) => a;
 
-var OutputParamMap = {
+const OutputParamMap = {
   frating: ["fRating", null, Number],
   gamma: ["fGammaAdj", null, Number],
   fgammaadj: ["fGammaAdj", null, Number, "gamma"],
@@ -565,7 +566,7 @@ var OutputParamMap = {
   tmpvars: ["tmpvars", null, wArray]
 };
 
-var InputParamMap = {
+const InputParamMap = {
   time: ["time", null, Number],
   bass: ["bass", null, Number],
   mid: ["mid", null, Number],
@@ -583,3 +584,5 @@ var InputParamMap = {
   meshx: ["gx", null, Number],
   meshy: ["gy", null, Number]
 };
+
+export { MilkdropPreset, OutputParamMap, InputParamMap }
