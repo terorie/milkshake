@@ -1,12 +1,13 @@
-milkshake -- A browser-based WebGL music visualizer based on Milkdrop / projectM
+# milkshake
 
-Live Demo: http://gattis.github.com/milkshake
+> A browser-based WebGL music visualizer based on Milkdrop / projectM
+
+Live Demo: http://gattis.github.io/milkshake/
 
 Copyright (C) 2011 Matt Gattis and contributors
 http://github.com/gattis/milkshake
 
-Overview
---------
+## Overview
 
 milkshake is a broswer-based music visualizer implemented using WebGL
 APIs available in the latest browsers.  It is a rendering engine which
@@ -31,14 +32,12 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 Lesser General Public License for more details.
 
 
-Installing
-----------
+## Installing
 
-See milkshake.html for an example installation.
+See [milkshake.html](milkshake.html) for an example installation.
 
 
-Presets
--------
+## Presets
 
 The presets are stored in Presets.js.  They are very similar to milkdrop presets, 
 except they are formatted in JSON.  The convert_preset.py script is a handy tool to
@@ -46,8 +45,7 @@ convert your favority mildrop presets.  Most milkdrop presets are now working, a
 included a nice set of working ones already in Presets.js.
 
 
-Audio
------
+## Audio
 
 By default, the SoundCloud API is used to provide music using the 
 SoundCloudAudio.js backend, which depends on Flash.  The other backend
@@ -59,20 +57,7 @@ in the future.  A brief status of future backends:
     Local uploads:  Available via the new File API. In development.
 
 
-Development
------------
+## Credit
 
-The project is still very much under development.  Any help would be greatly 
-appreciated.  Send pull requests on GitHub for any fixes or improvements you 
-are able to make.
-
-
-Credit Due
-----------
-
-Ryan Geiss - The creator of MilkDrop - http://www.geisswerks.com/about_milkdrop.html
-projectM - OpenGL reimplementation of MilkDrop - http://projectm.sourceforge.net/
-
-
-
-
+ - Ryan Geiss - The creator of MilkDrop - http://www.geisswerks.com/about_milkdrop.html
+ - projectM - OpenGL reimplementation of MilkDrop - http://projectm.sourceforge.net/
