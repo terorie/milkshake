@@ -1,4 +1,5 @@
-var Presets = {};
+let Presets = {};
+export default Presets;
 
 Presets["Aderrasi - Blender.milk"] = {
   fRating: 3.0,
@@ -63,25 +64,21 @@ Presets["Aderrasi - Blender.milk"] = {
   mv_g: 1.0,
   mv_b: 1.0,
   mv_a: 0.0,
-  per_pixel_code: function(_) {
-    with (_) {
-      rot = rot - 0.1 * min((2 - rad) * bass_att, (2 - rad) * treb_att);
-      grad = sqrt(x * x + y * y) * 2;
-      dx = dx - 0.02 * (1 - rad);
-      dy = dy + 0.02 * (1 - rad);
-      zoom = zoom - max(grad * (bass / 8 - treb / 8), 0);
-    }
+  per_pixel_code: (x) => {
+    x.rot = x.rot - 0.1 * Math.min((2 - rad) * bass_att, (2 - rad) * treb_att);
+    x.grad = Math.sqrt(x * x + y * y) * 2;
+    x.dx = dx - 0.02 * (1 - rad);
+    x.dy = dy + 0.02 * (1 - rad);
+    x.zoom = zoom - Math.max(x.grad * (bass / 8 - treb / 8), 0);
   },
-  per_frame_code: function(_) {
-    with (_) {
-      wave_r = wave_r + 0.9;
-      wave_g = 0.9 - 0.5 * bass;
-      wave_b = 0.9 - 0.5 * bass;
-      q1 = 0.05 * sin(time * 1.14);
-      q2 = 0.03 * sin(time * 0.93 + 2);
-      wave_x = wave_x + q1;
-      wave_y = wave_y + q2;
-    }
+  per_frame_code: (x) => {
+    x.wave_r = x.wave_r + 0.9;
+    x.wave_g = 0.9 - 0.5 * x.bass;
+    x.wave_b = 0.9 - 0.5 * x.bass;
+    x.q1 = 0.05 * sin(x.time * 1.14);
+    x.q2 = 0.03 * sin(x.time * 0.93 + 2);
+    x.wave_x = wave_x + q1;
+    x.wave_y = wave_y + q2;
   },
   shapes: [
     {

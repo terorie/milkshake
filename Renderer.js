@@ -19,8 +19,9 @@
  *
  */
 
-var Renderer = Class.extend({
-  init: function(width, height, gx, gy, texsize, music) {
+class Renderer {
+
+  constructor(width, height, gx, gy, texsize, music) {
     this.presetName = "None";
     this.vw = width;
     this.vh = height;
@@ -46,14 +47,14 @@ var Renderer = Class.extend({
 
     this.cop = new Float32Array([-0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5]);
     this.copbuf = gl.createBuffer();
-  },
+  }
 
-  ResetTextures: function() {
+  ResetTextures() {
     delete this.renderTarget;
     this.reset(this.vw, this.vh);
-  },
+  }
 
-  SetupPass1: function() {
+  SetupPass1() {
     this.totalframes++;
     this.renderTarget.lock();
     gl.viewport(0, 0, this.renderTarget.texsize, this.renderTarget.texsize);
@@ -67,25 +68,25 @@ var Renderer = Class.extend({
     uOrthof(0.0, 1, 0.0, 1, -40, 40);
     uMatrixMode(U_MODELVIEW);
     uLoadIdentity();
-  },
+  }
 
-  RenderItems: function(pipeline, pipelineContext) {
+  RenderItems(pipeline, pipelineContext) {
     this.renderContext.time = pipelineContext.time;
     this.renderContext.texsize = this.texsize;
     this.renderContext.aspectCorrect = this.correction;
     this.renderContext.aspectRatio = this.aspect;
     this.renderContext.music = this.music;
 
-    for (var pos = 0; pos < pipeline.drawables.length; pos++)
+    for (let pos = 0; pos < pipeline.drawables.length; pos++)
       if (pipeline.drawables[pos] != null)
         pipeline.drawables[pos].Draw(this.renderContext);
-  },
+  }
 
-  FinishPass1: function() {
+  FinishPass1() {
     this.renderTarget.unlock();
-  },
+  }
 
-  Pass2: function(pipeline, pipelineContext) {
+  Pass2(pipeline, pipelineContext) {
     gl.viewport(0, 0, this.vw, this.vh);
     gl.bindTexture(gl.TEXTURE_2D, this.renderTarget.textureID[0]);
     uMatrixMode(U_PROJECTION);
@@ -101,20 +102,20 @@ var Renderer = Class.extend({
     uLoadIdentity();
     uTranslatef(-0.5, -0.5, 0);
     uTranslatef(0.5, 0.5, 0);
-  },
+  }
 
-  RenderFrame: function(pipeline, pipelineContext) {
+  RenderFrame(pipeline, pipelineContext) {
     this.SetupPass1(pipeline, pipelineContext);
     this.Interpolation(pipeline);
     this.RenderItems(pipeline, pipelineContext);
     this.FinishPass1();
     this.Pass2(pipeline, pipelineContext);
-  },
+  }
 
-  Interpolation: function(pipeline) {
+  Interpolation(pipeline) {
     //console.log('interpolation')
     gl.bindTexture(gl.TEXTURE_2D, this.renderTarget.textureID[0]);
-    if (pipeline.textureWrap == 0) {
+    if (pipeline.textureWrap === 0) {
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     } else {
@@ -141,15 +142,15 @@ var Renderer = Class.extend({
     }
 
     if (pipeline.staticPerPixel) {
-      for (var j = 0; j < this.mesh.height - 1; j++) {
-        for (var i = 0; i < this.mesh.width; i++) {
+      for (let j = 0; j < this.mesh.height - 1; j++) {
+        for (let i = 0; i < this.mesh.width; i++) {
           this.t[i * 4] = pipeline.x_mesh[i][j];
           this.t[i * 4 + 1] = pipeline.y_mesh[i][j];
           this.t[i * 4 + 2] = pipeline.x_mesh[i][j + 1];
           this.t[i * 4 + 3] = pipeline.y_mesh[i][j + 1];
 
-          var index = j * this.mesh.width + i;
-          var index2 = (j + 1) * this.mesh.width + i;
+          const index = j * this.mesh.width + i;
+          const index2 = (j + 1) * this.mesh.width + i;
 
           this.p[i * 4] = this.mesh.identity[index].x;
           this.p[i * 4 + 1] = this.mesh.identity[index].y;
@@ -166,9 +167,9 @@ var Renderer = Class.extend({
 
     uDisableClientState(U_TEXTURE_COORD_ARRAY);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-  },
+  }
 
-  reset: function(w, h) {
+  reset(w, h) {
     this.aspect = h / w;
     this.vw = w;
     this.vh = h;
@@ -186,9 +187,9 @@ var Renderer = Class.extend({
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-  },
+  }
 
-  CompositeOutput: function(pipeline, pipelineContext) {
+  CompositeOutput(pipeline, pipelineContext) {
     uMatrixMode(U_TEXTURE);
     uLoadIdentity();
     uMatrixMode(U_MODELVIEW);
@@ -215,10 +216,11 @@ var Renderer = Class.extend({
     uDisableClientState(U_TEXTURE_COORD_ARRAY);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-    for (var pos = 0; pos < pipeline.compositeDrawables; pos++)
+    for (let pos = 0; pos < pipeline.compositeDrawables; pos++)
       pipeline.compositeDrawables[pos].Draw(this.renderContext);
   }
-});
+
+}
 
 Renderer.currentPipe = null;
 Renderer.SetPipeline = function(pipeline) {
@@ -229,22 +231,25 @@ Renderer.PerPixel = function(p, context) {
   //return Renderer.currentPipe.PerPixel(p,context);
 };
 
-var RenderContext = Class.extend({
-  init: function() {
+class RenderContext {
+
+  constructor() {
     this.time = 0;
     this.texsize = 1024;
     this.aspectRatio = 1;
     this.aspectCorrect = false;
   }
-});
 
-var RenderTarget = Class.extend({
-  init: function(texsize, width, height) {
-    var mindim = 0;
-    var origtexsize = 0;
+}
+
+class RenderTarget {
+
+  constructor(texsize, width, height) {
+    let mindim = 0;
+    let origtexsize = 0;
     this.texsize = texsize;
 
-    var fb, depth_rb, rgba_tex, other_tex;
+    let fb, depth_rb, rgba_tex, other_tex;
     fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
 
@@ -309,16 +314,16 @@ var RenderTarget = Class.extend({
       0
     );
     this.textureID = [rgba_tex, other_tex];
-    var status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-    if (status != gl.FRAMEBUFFER_COMPLETE)
-      print("ERR FRAMEBUFFER STATUS: " + status);
-  },
+    const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+    if (status !== gl.FRAMEBUFFER_COMPLETE)
+      console.log("ERR FRAMEBUFFER STATUS: " + status);
+  }
 
-  lock: function() {
+  lock() {
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbuffer[0]);
-  },
+  }
 
-  unlock: function() {
+  unlock() {
     gl.bindTexture(gl.TEXTURE_2D, this.textureID[1]);
     gl.copyTexSubImage2D(
       gl.TEXTURE_2D,
@@ -331,28 +336,34 @@ var RenderTarget = Class.extend({
       this.textsize
     );
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-  },
+  }
 
-  nearestPower2: function(value, scaleRule) {
-    var x = value;
-    var power = 0;
-    while ((x & 0x01) != 1) x >>= 1;
-    if (x == 1) return value;
+  nearestPower2(value, scaleRule) {
+    let x = value;
+    let power = 0;
+    while ((x & 0x01) !== 1) x >>= 1;
+    if (x === 1) return value;
     x = value;
-    while (x != 0) {
+    while (x !== 0) {
       x >>= 1;
       power++;
     }
-    if (scaleRule == this.SCALE_NEAREST) {
+    if (scaleRule === this.SCALE_NEAREST) {
       if ((1 << power) - value <= value - (1 << (power - 1))) return 1 << power;
       else return 1 << (power - 1);
     }
-    if (scaleRule == this.SCALE_MAGNIFY) return 1 << power;
-    if (scaleRule == this.SCALE_MINIFY) return 1 << (power - 1);
+    if (scaleRule === this.SCALE_MAGNIFY)
+      return 1 << power;
+    if (scaleRule === this.SCALE_MINIFY)
+      return 1 << (power - 1);
     return 0;
-  },
+  }
 
-  SCALE_NEAREST: 0,
-  SCALE_MAGNIFY: 1,
-  SCALE_MINIFY: 2
-});
+}
+
+RenderTarget.SCALE_NEAREST = 0;
+RenderTarget.SCALE_MAGNIFY = 1;
+RenderTarget.SCALE_MINIFY = 2;
+
+export { Renderer, RenderContext, RenderTarget };
+

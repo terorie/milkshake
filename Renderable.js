@@ -19,16 +19,19 @@
  *
  */
 
-var RenderItem = Class.extend({
-  init: function(literal) {
+class RenderItem {
+
+  constructor(literal) {
     this.masterAlpha = 1.0;
-    for (var prop in literal) this[prop] = literal[prop];
-  },
+    for (let prop in literal)
+      this[prop] = literal[prop];
+  }
 
-  Draw: function() {}
-});
+  Draw() {}
 
-var WaveMode = {
+}
+
+const WaveMode = {
   Circle: 0,
   RadialBlob: 1,
   Blob2: 2,
@@ -39,8 +42,11 @@ var WaveMode = {
   DoubleLine: 7
 };
 
-var MilkdropWaveform = RenderItem.extend({
-  init: function(literal) {
+class MilkdropWaveform extends RenderItem {
+
+  constructor(literal) {
+    super(literal);
+
     this.x = 0.5;
     this.y = 0.5;
     this.r = 1;
@@ -61,15 +67,13 @@ var MilkdropWaveform = RenderItem.extend({
     this.modOpacityStart = 0;
     this.modOpacityEnd = 1;
 
-    this._super(literal);
-
     this.wavearray = new Float32Array(2048 * 2);
     this.wavearray2 = new Float32Array(2048 * 2);
     this.wavearraybuf = gl.createBuffer();
     this.wavearray2buf = gl.createBuffer();
-  },
+  }
 
-  Draw: function(context) {
+  Draw(context) {
     this.WaveformMath(context);
     uMatrixMode(U_MODELVIEW);
     uPushMatrix();
@@ -87,12 +91,12 @@ var MilkdropWaveform = RenderItem.extend({
 
     this.MaximizeColors(context);
 
-    if (this.thick == 1)
+    if (this.thick === 1)
       gl.lineWidth(context.texsize < 512 ? 2 : (2 * context.texsize) / 512);
     else gl.lineWidth(context.texsize < 512 ? 1 : context.texsize / 512);
 
     gl.enable(gl.BLEND);
-    if (this.additive == 1) gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+    if (this.additive === 1) gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
     else gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     uTranslatef(0.5, 0.5, 0);
@@ -120,14 +124,14 @@ var MilkdropWaveform = RenderItem.extend({
     }
 
     uPopMatrix();
-  },
+  }
 
-  MaximizeColors: function(context) {
-    var wave_r_switch = 0;
-    var wave_g_switch = 0;
-    var wave_b_switch = 0;
+  MaximizeColors(context) {
+    let wave_r_switch = 0;
+    let wave_g_switch = 0;
+    let wave_b_switch = 0;
 
-    if (this.mode == WaveMode.Blob2 || this.mode == WaveMode.Blob5)
+    if (this.mode === WaveMode.Blob2 || this.mode === WaveMode.Blob5)
       switch (context.texsize) {
         case 256:
           this.temp_a *= 0.07;
@@ -142,7 +146,7 @@ var MilkdropWaveform = RenderItem.extend({
           this.temp_a *= 0.13;
           break;
       }
-    else if (this.mode == WaveMode.Blob3) {
+    else if (this.mode === WaveMode.Blob3) {
       switch (context.texsize) {
         case 256:
           this.temp_a *= 0.075;
@@ -184,24 +188,24 @@ var MilkdropWaveform = RenderItem.extend({
     } else {
       uColor4f(this.r, this.g, this.b, this.temp_a * this.masterAlpha);
     }
-  },
+  }
 
-  WaveformMath: function(context) {
-    var i, r, theta, temp_y, cos_rot, sin_rot;
-    var offset = this.x - 0.5;
-    var wave_x_temp = 0;
-    var wave_y_temp = 0;
+  WaveformMath(context) {
+    let i, r, theta, temp_y, cos_rot, sin_rot;
+    let offset = this.x - 0.5;
+    let wave_x_temp = 0;
+    let wave_y_temp = 0;
 
     this.two_waves = false;
     this.loop = false;
-    if (this.mode == WaveMode.Circle) {
+    if (this.mode === WaveMode.Circle) {
       this.loop = true;
       this.rot = 0;
       this.aspectScale = 1.0;
       temp_y = -1 * (this.y - 1.0);
       this.samples = context.music.numsamples;
-      var inv_nverts_minus_one = 1.0 / this.samples;
-      var offset =
+      let inv_nverts_minus_one = 1.0 / this.samples;
+      let offset =
         context.music.pcmdataR[0] +
         context.music.pcmdataL[0] -
         (context.music.pcmdataR[this.samples - 1] +
@@ -213,12 +217,12 @@ var MilkdropWaveform = RenderItem.extend({
         theta = i * inv_nverts_minus_one * 6.28 + context.time * 0.2;
         this.wavearray[i * 2] =
           r *
-            Math.cos(theta) *
-            (context.aspectCorrect ? context.aspectRatio : 1.0) +
+          Math.cos(theta) *
+          (context.aspectCorrect ? context.aspectRatio : 1.0) +
           this.x;
         this.wavearray[i * 2 + 1] = r * Math.sin(theta) + temp_y;
       }
-    } else if (this.mode == WaveMode.RadialBlob) {
+    } else if (this.mode === WaveMode.RadialBlob) {
       this.rot = 0;
       this.aspectScale = context.aspectRatio;
       temp_y = -1 * (this.y - 1.0);
@@ -234,12 +238,12 @@ var MilkdropWaveform = RenderItem.extend({
           0.5;
         this.wavearray[i * 2] =
           r *
-            Math.cos(theta) *
-            (context.aspectCorrect ? context.aspectRatio : 1.0) +
+          Math.cos(theta) *
+          (context.aspectCorrect ? context.aspectRatio : 1.0) +
           this.x;
         this.wavearray[i * 2 + 1] = r * Math.sin(theta) + temp_y;
       }
-    } else if (this.mode == WaveMode.Blob2) {
+    } else if (this.mode === WaveMode.Blob2) {
       temp_y = -1 * (this.y - 1.0);
       this.rot = 0;
       this.aspectScale = 1.0;
@@ -250,7 +254,7 @@ var MilkdropWaveform = RenderItem.extend({
         this.wavearray[i * 2 + 1] =
           context.music.pcmdataL[i + 32] * this.scale * 0.5 + temp_y;
       }
-    } else if (this.mode == WaveMode.DerivativeLine) {
+    } else if (this.mode === WaveMode.DerivativeLine) {
       this.rot = -this.mystery * 90;
       this.aspectScale = 1.0;
       temp_y = -1 * (this.y - 1.0);
@@ -273,7 +277,7 @@ var MilkdropWaveform = RenderItem.extend({
         xxm1 = xx;
         yym1 = yy;
       }
-    } else if (this.mode == WaveMode.Blob5) {
+    } else if (this.mode === WaveMode.Blob5) {
       this.rot = 0;
       this.aspectScale = 1.0;
       temp_y = -1 * (this.y - 1.0);
@@ -289,14 +293,14 @@ var MilkdropWaveform = RenderItem.extend({
           context.music.pcmdataL[i + 32] * context.music.pcmdataL[i + 32];
         this.wavearray[i * 2] =
           (x0 * cos_rot - y0 * sin_rot) *
-            this.scale *
-            0.5 *
-            (context.aspectCorrect ? context.aspectRatio : 1.0) +
+          this.scale *
+          0.5 *
+          (context.aspectCorrect ? context.aspectRatio : 1.0) +
           this.x;
         this.wavearray[i * 2 + 1] =
           (x0 * sin_rot + y0 * cos_rot) * this.scale * 0.5 + temp_y;
       }
-    } else if (this.mode == WaveMode.Line) {
+    } else if (this.mode === WaveMode.Line) {
       wave_x_temp =
         -2 * 0.4142 * (Math.abs(Math.abs(this.mystery) - 0.5) - 0.5);
       this.rot = -this.mystery * 90;
@@ -308,7 +312,7 @@ var MilkdropWaveform = RenderItem.extend({
         this.wavearray[i * 2 + 1] =
           context.music.pcmdataR[i] * 0.04 * this.scale + wave_x_temp;
       }
-    } else if (this.mode == WaveMode.DoubleLine) {
+    } else if (this.mode === WaveMode.DoubleLine) {
       wave_x_temp =
         -2 * 0.4142 * (Math.abs(Math.abs(this.mystery) - 0.5) - 0.5);
       this.rot = -this.mystery * 90;
@@ -329,10 +333,14 @@ var MilkdropWaveform = RenderItem.extend({
       }
     }
   }
-});
 
-var CustomWaveform = RenderItem.extend({
-  init: function(literal, initialQs) {
+}
+
+class CustomWaveform extends RenderItem {
+
+  constructor(literal, initialQs) {
+    super(literal);
+
     this.r = 0;
     this.g = 0;
     this.b = 0;
@@ -347,20 +355,20 @@ var CustomWaveform = RenderItem.extend({
     this.smoothing = 0;
     this.sep = 0;
 
-    this.init_code = function() {};
-    this.per_frame_code = function() {};
-    this.per_point_code = function() {};
+    this.init_code = () => {};
+    this.per_frame_code = () => {};
+    this.per_point_code = () => {};
 
     this.masterAlpha = 1.0;
-    for (var prop in literal)
-      if (prop.toLowerCase() == "bspectrum")
-        this.spectrum = new Boolean(literal[prop]);
-      else if (prop.toLowerCase() == "bdrawthick")
-        this.thick = new Boolean(literal[prop]);
-      else if (prop.toLowerCase() == "busedots")
-        this.dots = new Boolean(literal[prop]);
-      else if (prop.toLowerCase() == "badditive")
-        this.additive = new Boolean(literal[prop]);
+    for (let prop in literal)
+      if (prop.toLowerCase() === "bspectrum")
+        this.spectrum = Boolean(literal[prop]);
+      else if (prop.toLowerCase() === "bdrawthick")
+        this.thick = Boolean(literal[prop]);
+      else if (prop.toLowerCase() === "busedots")
+        this.dots = Boolean(literal[prop]);
+      else if (prop.toLowerCase() === "badditive")
+        this.additive = Boolean(literal[prop]);
       else this[prop] = literal[prop];
 
     if (this.samples > 512) this.samples = 512;
@@ -390,20 +398,21 @@ var CustomWaveform = RenderItem.extend({
     this.p = new Float32Array(this.samples * 2);
     this.colorbuf = gl.createBuffer();
     this.pbuf = gl.createBuffer();
-  },
+  }
 
-  varInit: function() {
-    var testPool = new WaveFrameVariablePool();
-    var winProps = {};
-    for (var prop in window) winProps[prop] = null;
-    for (var i = 0; i < 30; i++)
+  varInit() {
+    const testPool = new WaveFrameVariablePool();
+    let winProps = {};
+    for (let prop in window)
+      winProps[prop] = null;
+    for (let i = 0; i < 30; i++)
       try {
         this.init_code(testPool);
         this.per_frame_code(testPool);
         break;
       } catch (error) {
-        if (error.name == "ReferenceError") {
-          var customVar = error.message.split(" ")[0];
+        if (error instanceof ReferenceError) {
+          const customVar = error.message.split(" ")[0];
           this.framePool[customVar] = 0;
           testPool[customVar] = 0;
         } else {
@@ -412,21 +421,21 @@ var CustomWaveform = RenderItem.extend({
           throw error;
         }
       }
-    for (var prop in window)
+    for (const prop in window)
       if (!(prop in winProps)) {
         this.framePool[prop] = 0;
         delete window[prop];
       }
-  },
+  }
 
-  runCode: function() {
+  runCode() {
     this.framePool.pushTs(this.initialTs);
     this.initialVals.popOutputs(this.framePool);
     this.per_frame_code(this.framePool);
     this.framePool.popOutputs(this);
-  },
+  }
 
-  runPerPoint: function() {
+  runPerPoint() {
     this.framePool.transferQs(this.pointPool);
     this.framePool.transferTs(this.pointPool);
     this.pointPool.pushInputs(this.framePool);
@@ -448,9 +457,9 @@ var CustomWaveform = RenderItem.extend({
       this.x_mesh[i] = this.pointPool.x;
       this.y_mesh[i] = this.pointPool.y;
     }
-  },
+  }
 
-  Draw: function(context) {
+  Draw(context) {
     gl.enable(gl.BLEND);
     if (this.additive) gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
     else gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -475,15 +484,15 @@ var CustomWaveform = RenderItem.extend({
       this.smoothing
     );
 
-    var mult = this.scaling * (this.spectrum ? 0.015 : 1.0);
-    for (var i = 0; i < this.samples; i++) {
+    const mult = this.scaling * (this.spectrum ? 0.015 : 1.0);
+    for (let i = 0; i < this.samples; i++) {
       this.waveDataL[i] *= mult;
       this.waveDataR[i] *= mult;
     }
 
     this.runPerPoint();
 
-    for (var i = 0; i < this.samples; i++) {
+    for (let i = 0; i < this.samples; i++) {
       this.colors[i * 4] = this.r_mesh[i];
       this.colors[i * 4 + 1] = this.g_mesh[i];
       this.colors[i * 4 + 2] = this.b_mesh[i];
@@ -512,11 +521,14 @@ var CustomWaveform = RenderItem.extend({
 
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
   }
-});
 
-var DarkenCenter = RenderItem.extend({
-  init: function(literal) {
-    this._super(literal);
+}
+
+class DarkenCenter extends RenderItem {
+
+  constructor(literal) {
+    super(literal);
+
     this.colors = new Float32Array([
       0,
       0,
@@ -559,9 +571,9 @@ var DarkenCenter = RenderItem.extend({
     ]);
     this.colorbuf = gl.createBuffer();
     this.pointsbuf = gl.createBuffer();
-  },
+  }
 
-  Draw: function(context) {
+  Draw(context) {
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
@@ -580,10 +592,14 @@ var DarkenCenter = RenderItem.extend({
     uColorPointer(4, gl.FLOAT, 0, this.colorbuf);
     uDrawArrays(gl.TRIANGLE_FAN, 0, 6);
   }
-});
 
-Shape = RenderItem.extend({
-  init: function(literal, initialQs) {
+}
+
+class Shape extends RenderItem {
+
+  constructor(literal, initialQs) {
+    super(literal);
+
     this.sides = 4;
     this.thickOutline = false;
     this.enabled = true;
@@ -618,8 +634,6 @@ Shape = RenderItem.extend({
     this.init_code = function() {};
     this.per_frame_code = function() {};
 
-    this._super(literal);
-
     this.initialVals = new ShapeFrameVariablePool();
     this.initialVals.pushOutputs(this);
 
@@ -639,47 +653,47 @@ Shape = RenderItem.extend({
     this.texbuf = gl.createBuffer();
     this.pointsbuf = gl.createBuffer();
     this.points2buf = gl.createBuffer();
-  },
+  }
 
-  varInit: function() {
-    var testPool = new ShapeFrameVariablePool();
-    for (var i = 0; i < 30; i++)
+  varInit() {
+    const testPool = new ShapeFrameVariablePool();
+    for (let i = 0; i < 30; i++)
       try {
         this.init_code(testPool);
         this.per_frame_code(testPool);
         break;
       } catch (error) {
-        if (error.name == "ReferenceError") {
-          var customVar;
-          if (error.message.indexOf("Can't find variable:") == 0)
+        if (error instanceof ReferenceError) {
+          let customVar;
+          if (error.message.indexOf("Can't find variable:") === 0)
             customVar = error.message.split(" ").pop();
           else customVar = error.message.split(" ")[0];
           this.framePool[customVar] = 0;
           testPool[customVar] = 0;
         } else throw error;
       }
-  },
+  }
 
-  runCode: function() {
+  runCode() {
     this.framePool.pushTs(this.initialTs);
     this.initialVals.popOutputs(this.framePool);
     this.per_frame_code(this.framePool);
     this.framePool.popOutputs(this);
-  },
+  }
 
-  Draw: function(context) {
-    var xval, yval, t;
-    var temp_radius = this.rad * (0.707 * 0.707 * 0.707 * 1.04);
+  Draw(context) {
+    let xval, yval, t;
+    const temp_radius = this.rad * (0.707 * 0.707 * 0.707 * 1.04);
     gl.enable(gl.BLEND);
-    if (this.additive == 0) gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    if (this.additive === 0) gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     else gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 
     xval = this.x;
     yval = -(this.y - 1);
 
     if (this.textured) {
-      if (this.ImageUrl != "") {
-        var tex = textures[this.ImageUrl];
+      if (this.ImageUrl !== "") {
+        const tex = textures[this.ImageUrl];
         gl.bindTexture(gl.TEXTURE_2D, tex);
         context.aspectRatio = 1.0;
       }
@@ -705,7 +719,7 @@ Shape = RenderItem.extend({
       this.points[0] = xval;
       this.points[1] = yval;
 
-      for (var i = 1; i < this.sides + 2; i++) {
+      for (let i = 1; i < this.sides + 2; i++) {
         this.colors[i * 4] = this.r2;
         this.colors[i * 4 + 1] = this.g2;
         this.colors[i * 4 + 2] = this.b2;
@@ -717,20 +731,20 @@ Shape = RenderItem.extend({
           (0.5 *
             Math.cos(t * 3.1415927 * 2 + this.tex_ang + 3.1415927 * 0.25) *
             (context.aspectCorrect ? context.aspectRatio : 1.0)) /
-            this.tex_zoom;
+          this.tex_zoom;
         this.texcoords[i * 2 + 1] =
           0.5 +
           (0.5 *
             Math.sin(t * 3.1415927 * 2 + this.tex_ang + 3.1415927 * 0.25)) /
-            this.tex_zoom;
+          this.tex_zoom;
         this.points[i * 2] =
           temp_radius *
-            Math.cos(t * 3.1415927 * 2 + this.ang + 3.1415927 * 0.25) *
-            (context.aspectCorrect ? context.aspectRatio : 1.0) +
+          Math.cos(t * 3.1415927 * 2 + this.ang + 3.1415927 * 0.25) *
+          (context.aspectCorrect ? context.aspectRatio : 1.0) +
           xval;
         this.points[i * 2 + 1] =
           temp_radius *
-            Math.sin(t * 3.1415927 * 2 + this.ang + 3.1415927 * 0.25) +
+          Math.sin(t * 3.1415927 * 2 + this.ang + 3.1415927 * 0.25) +
           yval;
       }
 
@@ -760,7 +774,7 @@ Shape = RenderItem.extend({
       this.points[0] = xval;
       this.points[1] = yval;
 
-      for (var i = 1; i < this.sides + 2; i++) {
+      for (let i = 1; i < this.sides + 2; i++) {
         this.colors[i * 4] = this.r2;
         this.colors[i * 4 + 1] = this.g2;
         this.colors[i * 4 + 2] = this.b2;
@@ -768,12 +782,12 @@ Shape = RenderItem.extend({
         t = (i - 1) / this.sides;
         this.points[i * 2] =
           temp_radius *
-            Math.cos(t * 3.1415927 * 2 + this.ang + 3.1415927 * 0.25) *
-            (context.aspectCorrect ? context.aspectRatio : 1.0) +
+          Math.cos(t * 3.1415927 * 2 + this.ang + 3.1415927 * 0.25) *
+          (context.aspectCorrect ? context.aspectRatio : 1.0) +
           xval;
         this.points[i * 2 + 1] =
           temp_radius *
-            Math.sin(t * 3.1415927 * 2 + this.ang + 3.1415927 * 0.25) +
+          Math.sin(t * 3.1415927 * 2 + this.ang + 3.1415927 * 0.25) +
           yval;
       }
 
@@ -799,16 +813,16 @@ Shape = RenderItem.extend({
       this.border_a * this.masterAlpha
     );
 
-    for (var i = 0; i < this.sides; i++) {
+    for (let i = 0; i < this.sides; i++) {
       t = (i - 1) / this.sides;
       this.points2[i * 2] =
         temp_radius *
-          Math.cos(t * 3.1415927 * 2 + this.ang + 3.1415927 * 0.25) *
-          (context.aspectCorrect ? context.aspectRatio : 1.0) +
+        Math.cos(t * 3.1415927 * 2 + this.ang + 3.1415927 * 0.25) *
+        (context.aspectCorrect ? context.aspectRatio : 1.0) +
         xval;
       this.points2[i * 2 + 1] =
         temp_radius *
-          Math.sin(t * 3.1415927 * 2 + this.ang + 3.1415927 * 0.25) +
+        Math.sin(t * 3.1415927 * 2 + this.ang + 3.1415927 * 0.25) +
         yval;
     }
 
@@ -819,10 +833,14 @@ Shape = RenderItem.extend({
     if (this.thickOutline)
       gl.lineWidth(context.texsize < 512 ? 1 : context.texsize / 512);
   }
-});
 
-var MotionVectors = RenderItem.extend({
-  init: function(literal) {
+}
+
+class MotionVectors extends RenderItem {
+
+  constructor(literal) {
+    super(literal);
+
     this.r = 0.0;
     this.g = 0.0;
     this.b = 0.0;
@@ -833,18 +851,17 @@ var MotionVectors = RenderItem.extend({
     this.x_offset = 0.0;
     this.y_offset = 0.0;
 
-    this._super(literal);
     this.points = new Float32Array(Math.floor(this.x_num * this.y_num) * 2);
     this.pointsbuf = gl.createBuffer();
-  },
+  }
 
-  Draw: function() {
+  Draw() {
     uEnableClientState(U_VERTEX_ARRAY);
     uDisableClientState(U_TEXTURE_COORD_ARRAY);
     uDisableClientState(U_COLOR_ARRAY);
 
-    var intervalx = 1.0 / this.x_num;
-    var intervaly = 1.0 / this.y_num;
+    const intervalx = 1.0 / this.x_num;
+    const intervaly = 1.0 / this.y_num;
 
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -853,15 +870,14 @@ var MotionVectors = RenderItem.extend({
     uColor4f(this.r, this.g, this.b, this.a * this.masterAlpha);
 
     if (this.x_num + this.y_num < 600) {
-      var size = Math.floor(this.x_num * this.y_num);
+      const size = Math.floor(this.x_num * this.y_num);
       if (size > 0) {
         if (this.points.length < size * 2)
           this.points = new Float32Array(size * 2);
-        for (var x = 0; x < Math.floor(this.x_num); x++)
-          for (var y = 0; y < Math.floor(this.y_num); y++) {
-            var lx, ly;
-            lx = this.x_offset + x * intervalx;
-            ly = this.y_offset + y * intervaly;
+        for (let x = 0; x < Math.floor(this.x_num); x++)
+          for (let y = 0; y < Math.floor(this.y_num); y++) {
+            const lx = this.x_offset + x * intervalx;
+            const ly = this.y_offset + y * intervaly;
             this.points[x * Math.floor(this.y_num) + y][0] = lx;
             this.points[x * Math.floor(this.y_num) + y][1] = ly;
           }
@@ -872,10 +888,14 @@ var MotionVectors = RenderItem.extend({
       }
     }
   }
-});
 
-var Border = RenderItem.extend({
-  init: function(literal) {
+}
+
+class Border extends RenderItem {
+
+  constructor(literal) {
+    super(literal);
+
     this.outer_size = 0;
     this.outer_r = 0;
     this.outer_g = 0;
@@ -907,16 +927,16 @@ var Border = RenderItem.extend({
     this.pointsFbuf = gl.createBuffer();
     this.pointsGbuf = gl.createBuffer();
     this.pointsHbuf = gl.createBuffer();
-  },
+  }
 
-  Draw: function() {
+  Draw() {
     uEnableClientState(U_VERTEX_ARRAY);
     uDisableClientState(U_COLOR_ARRAY);
     uDisableClientState(U_TEXTURE_COORD_ARRAY);
 
-    var of = this.outer_size * 0.5;
-    var iff = this.inner_size * 0.5;
-    var texof = 1.0 - of;
+    const of = this.outer_size * 0.5;
+    const iff = this.inner_size * 0.5;
+    const texof = 1.0 - of;
 
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -994,17 +1014,21 @@ var Border = RenderItem.extend({
     uVertexPointer(2, gl.FLOAT, 0, this.pointsHbuf);
     uDrawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
-});
 
-var Orientation = {
+}
+
+const Orientation = {
   Normal: 0,
   FlipX: 1,
   FlipY: 2,
   FlipXY: 3
 };
 
-var VideoEcho = RenderItem.extend({
-  init: function(literal) {
+class VideoEcho extends RenderItem {
+
+  constructor(literal) {
+    super(literal);
+
     this.a = 0;
     this.zoom = 0;
     this.orientation = Orientation.Normal;
@@ -1026,9 +1050,9 @@ var VideoEcho = RenderItem.extend({
     this.texbuf = gl.createBuffer();
     this.pointsbuf = gl.createBuffer();
     this.pointsFlipbuf = gl.createBuffer();
-  },
+  }
 
-  Draw: function(context) {
+  Draw(context) {
     uEnableClientState(U_VERTEX_ARRAY);
     uDisableClientState(U_COLOR_ARRAY);
     uEnableClientState(U_TEXTURE_COORD_ARRAY);
@@ -1051,7 +1075,7 @@ var VideoEcho = RenderItem.extend({
     uScalef(1.0 / this.zoom, 1.0 / this.zoom, 1);
     uTranslatef(-0.5, -0.5, 0);
 
-    var flipx = 1,
+    let flipx = 1,
       flipy = 1;
     switch (this.orientation) {
       case Orientation.Normal:
@@ -1089,11 +1113,14 @@ var VideoEcho = RenderItem.extend({
     uDisableClientState(U_TEXTURE_COORD_ARRAY);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
   }
-});
 
-var Filter = RenderItem.extend({
-  init: function(literal) {
-    this._super(literal);
+}
+
+class Filter extends RenderItem {
+
+  constructor(literal) {
+    super(literal);
+
     this.points = new Float32Array([
       -0.5,
       -0.5,
@@ -1106,10 +1133,12 @@ var Filter = RenderItem.extend({
     ]);
     this.pointsbuf = gl.createBuffer();
   }
-});
 
-var Brighten = Filter.extend({
-  Draw: function(context) {
+}
+
+class Brighten extends Filter {
+
+  Draw(context) {
     uEnableClientState(U_VERTEX_ARRAY);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.pointsbuf);
     gl.bufferData(gl.ARRAY_BUFFER, this.points, gl.STATIC_DRAW);
@@ -1125,10 +1154,12 @@ var Brighten = Filter.extend({
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     uDisableClientState(U_VERTEX_ARRAY);
   }
-});
 
-var Darken = Filter.extend({
-  Draw: function(context) {
+}
+
+class Darken extends Filter {
+
+  Draw(context) {
     uEnableClientState(U_VERTEX_ARRAY);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.pointsbuf);
     gl.bufferData(gl.ARRAY_BUFFER, this.points, gl.STATIC_DRAW);
@@ -1140,10 +1171,12 @@ var Darken = Filter.extend({
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     uDisableClientState(U_VERTEX_ARRAY);
   }
-});
 
-var Invert = Filter.extend({
-  Draw: function(context) {
+}
+
+class Invert extends Filter {
+
+  Draw(context) {
     uEnableClientState(U_VERTEX_ARRAY);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.pointsbuf);
     gl.bufferData(gl.ARRAY_BUFFER, this.points, gl.STATIC_DRAW);
@@ -1155,10 +1188,12 @@ var Invert = Filter.extend({
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     uDisableClientState(U_VERTEX_ARRAY);
   }
-});
 
-var Solarize = Filter.extend({
-  Draw: function(context) {
+}
+
+class Solarize extends Filter {
+
+  Draw(context) {
     uEnableClientState(U_VERTEX_ARRAY);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.pointsbuf);
     gl.bufferData(gl.ARRAY_BUFFER, this.points, gl.STATIC_DRAW);
@@ -1172,4 +1207,5 @@ var Solarize = Filter.extend({
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     uDisableClientState(U_VERTEX_ARRAY);
   }
-});
+
+}
