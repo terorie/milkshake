@@ -96,7 +96,7 @@ class TimeKeeper {
     );
   }
 
-  getTicks(start) {
+  static getTicks(start) {
     return new Date() - start;
   }
 

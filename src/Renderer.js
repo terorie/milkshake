@@ -19,6 +19,8 @@
  *
  */
 
+import {PerPixelMesh} from "./PerPixelMesh";
+
 class Renderer {
 
   constructor(width, height, gx, gy, texsize, music) {
@@ -37,7 +39,7 @@ class Renderer {
     this.renderContext = {};
 
     this.p = new Float32Array(this.mesh.width * 2 * 2);
-    this.pbuf = gl.createBuffer();
+    this.pbuf = window.gl.createBuffer();
 
     this.t = new Float32Array(this.mesh.width * 2 * 2);
     this.tbuf = gl.createBuffer();

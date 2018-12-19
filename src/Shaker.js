@@ -1,3 +1,11 @@
+import {PipelineContext} from "./PipelineContext";
+import {TimeKeeper} from "./TimeKeeper";
+import {Music} from "./Music";
+import {BorderMerge, MasterRenderItemMerge, ShapeMerge} from "./RenderItemMergeFunction";
+import {Renderer} from "./Renderer";
+import {MilkdropPreset} from "./MilkDropPreset";
+import Presets from "./Presets";
+
 class Shaker {
 
   constructor() {
@@ -36,7 +44,7 @@ class Shaker {
     this.running = true;
 
     this.presetNames = [];
-    for (var presetName in Presets) {
+    for (const presetName in Presets) {
       this.presetNames.push(presetName);
       Presets[presetName] = new MilkdropPreset(
         presetName,

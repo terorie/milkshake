@@ -19,8 +19,8 @@
  *
  */
 
-import {Shaker} from "./Shaker";
-import {HTML5Audio} from "./HTML5Audio";
+import {Shaker} from "./src/Shaker";
+import {HTML5Audio} from "./src/HTML5Audio";
 
 const milk = (() => {
 
@@ -438,3 +438,4 @@ const milk = (() => {
 })();
 
 export default milk;
+window.milk = milk;
