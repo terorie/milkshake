@@ -42,7 +42,7 @@ class SoundCloudAudio {
   }
 
   gotStreamURL(response) {
-    var songs;
+    let songs;
     if ("tracks" in response)
       songs = response.tracks;
     else if (0 in response)
@@ -53,6 +53,8 @@ class SoundCloudAudio {
 
     for (let i = 0; i < songs.length; i++) {
       const song = songs[i];
+      if (!song.streamable)
+        continue;
       const url = song.stream_url + ((song.stream_url.indexOf("?") === -1) ? "?" : "&") + "client_id=" + audio.clientId;
       const trackId = "track_" + song.id;
       audio.tracks.push(trackId);
