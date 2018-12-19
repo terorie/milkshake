@@ -154,4 +154,13 @@ class ShapeFrameVariablePool extends CustomVariablePool {
   }
 }
 
-export { VariablePool };
+export {
+  VariablePool,
+  PresetVariablePool,
+  PresetFrameVariablePool,
+  PresetPixelVariablePool,
+  CustomVariablePool,
+  WaveFrameVariablePool,
+  WavePointVariablePool,
+  ShapeFrameVariablePool,
+};

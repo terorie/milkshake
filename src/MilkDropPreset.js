@@ -19,6 +19,8 @@
  *
  */
 
+import {PresetFrameVariablePool, PresetPixelVariablePool} from "./Variables";
+
 class MilkdropPreset {
 
   constructor(name, preset, gx, gy) {
@@ -43,7 +45,8 @@ class MilkdropPreset {
     this.per_pixel_code = function() {};
 
     this.initialVals = new PresetFrameVariablePool();
-    for (var prop in preset) this.loadParam(prop, preset[prop]);
+    for (const prop in preset)
+      this.loadParam(prop, preset[prop]);
 
     this.framePool = new PresetFrameVariablePool();
     this.pixelPool = new PresetPixelVariablePool();
@@ -56,9 +59,9 @@ class MilkdropPreset {
     this.customShapes = this.customShapes || [];
     this.customWaves = this.customWaves || [];
 
-    for (var i = 0; i < this.customShapes.length; i++)
+    for (let i = 0; i < this.customShapes.length; i++)
       this.customShapes[i] = new Shape(this.customShapes[i], this.initialQs);
-    for (var i = 0; i < this.customWaves.length; i++)
+    for (let i = 0; i < this.customWaves.length; i++)
       this.customWaves[i] = new CustomWaveform(
         this.customWaves[i],
         this.initialQs
@@ -91,10 +94,10 @@ class MilkdropPreset {
       "origy"
     ]);
 
-    for (var x = 0; x < gx; x++)
-      for (var y = 0; y < gy; y++) {
-        var origx = x / (gx - 1);
-        var origy = -(y / (gy - 1) - 1);
+    for (let x = 0; x < gx; x++)
+      for (let y = 0; y < gy; y++) {
+        const origx = x / (gx - 1);
+        const origy = -(y / (gy - 1) - 1);
         this.inputs.origx[x][y] = origx;
         this.inputs.origy[x][y] = origy;
         this.inputs.origrad[x][y] =
@@ -193,7 +196,7 @@ class MilkdropPreset {
         break;
       } catch (error) {
         if (error instanceof ReferenceError) {
-          var customVar;
+          let customVar;
           if (error.message.indexOf("Can't find variable:") === 0)
             customVar = error.message.split(" ").pop();
           else customVar = error.message.split(" ")[0];
@@ -289,8 +292,8 @@ class MilkdropPreset {
     // should we init from framepool or initialvals?
     const key = mesh + "_mesh";
     const val = this.framePool[mesh];
-    for (var x = 0; x < this.inputs.gx; x++)
-      for (var y = 0; y < this.inputs.gy; y++) this.outputs[key][x][y] = val;
+    for (let x = 0; x < this.inputs.gx; x++)
+      for (let y = 0; y < this.inputs.gy; y++) this.outputs[key][x][y] = val;
     this.pixelPool[mesh] = this.framePool[mesh];
   }
 
@@ -359,7 +362,7 @@ class MilkdropPreset {
   }
 
   PerPixelMath(context) {
-    var x, y, fZoom2, fZoom2Inv;
+    let x, y, fZoom2, fZoom2Inv;
 
     for (x = 0; x < this.outputs.gx; x++)
       for (y = 0; y < this.outputs.gy; y++) {
@@ -442,11 +445,11 @@ class MilkdropPreset {
 
     for (x = 0; x < this.outputs.gx; x++)
       for (y = 0; y < this.outputs.gy; y++) {
-        var u2 = this.outputs.x_mesh[x][y] - this.outputs.cx_mesh[x][y];
-        var v2 = this.outputs.y_mesh[x][y] - this.outputs.cy_mesh[x][y];
+        const u2 = this.outputs.x_mesh[x][y] - this.outputs.cx_mesh[x][y];
+        const v2 = this.outputs.y_mesh[x][y] - this.outputs.cy_mesh[x][y];
 
-        var cos_rot = Math.cos(this.outputs.rot_mesh[x][y]);
-        var sin_rot = Math.sin(this.outputs.rot_mesh[x][y]);
+        const cos_rot = Math.cos(this.outputs.rot_mesh[x][y]);
+        const sin_rot = Math.sin(this.outputs.rot_mesh[x][y]);
 
         this.outputs.x_mesh[x][y] =
           u2 * cos_rot - v2 * sin_rot + this.outputs.cx_mesh[x][y];
